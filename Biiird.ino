@@ -163,8 +163,20 @@ void loop()
       lastsw = sw;
       
       if (sw == switchback){
-        lcd.setCursor (0, 0);
-        lcd.print("back pressed");
+        //lcd.setCursor (0, 0);
+        //lcd.print("back pressed");
+        menuLevel=0;
+        lcd.clear();
+        int i=0;
+        for(i;i<4;i++){
+          if(i==0){
+            lcd.setCursor (0,0);
+          }
+          else{  
+             lcd.setCursor (1, i);
+          }
+          lcd.print(menuitems[menuLevel][i]);
+        }
       }
       
      if (sw == switchup){
@@ -189,15 +201,32 @@ void loop()
         //lcd.setBacklight(HIGH);
            menuItemOld=menuItem;
             menuItem++;
-            
-            if (menuItem==4){menuItem=1;}
+            int drawCounter;            
+                
+            if (menuItem==5){menuItem=1;}
             lcd.setCursor (0, menuItem);
             lcd.print(">");
-            menuLevel=menuItem;
+            
+                   
+            
             if (menuItemOld!=0){
             lcd.setCursor (0, menuItemOld);
             lcd.print(" ");
             }
+            
+            if (menuItemOld==4){
+              int i=0;
+              for(i;i<4;i++){
+                 if(i==0){
+                 lcd.setCursor (0,0);
+                 }
+                 else{  
+                   lcd.setCursor (1, i);
+                  }
+               lcd.print(menuitems[menuLevel][menuItem]);
+               }                           
+            }
+              menuLevel=menuItem;   
       }
 
       if (sw == switchok){
