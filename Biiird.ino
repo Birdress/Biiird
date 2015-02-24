@@ -6,7 +6,7 @@ int menuItem=0;
 int menuItemOld=0;
 int menuLevel=0;
 
-char* menu0[] = {"Main Menu", "Flight Control", "Waypoints", "Power"};
+char* menu0[] = {"Main Menu", "Flight Control", "Drop Control", "Waypoints", "Power"};
 char* menu1[] = {"Flight Mode", "Up/Down Mode", "Move Mode", "Metrics"};
 char* menu2[] = {"Drop Control", "Open/Drop", "", "Metrics"};
 char* menu3[] = {"Waypoints", "Waypoint 1", "Waypoint 2", "Metrics"};
@@ -163,8 +163,21 @@ void loop()
       lastsw = sw;
       
       if (sw == switchback){
-        lcd.setCursor (0, 0);
-        lcd.print("back pressed");
+        menuLevel=0;
+        lcd.clear();
+        int i=0;
+        for(i;i<4;i++){
+          if(i==0){
+            lcd.setCursor (0,0);
+          }
+          else{  
+             lcd.setCursor (1, i);
+          }
+          lcd.print(menuitems[menuLevel][i]);
+          Serial.println(menuLevel);
+          //Serial.println(i);
+          //Serial.println(menuitems[menuLevel][i]);
+        }
       }
       
      if (sw == switchup){
@@ -190,19 +203,45 @@ void loop()
            menuItemOld=menuItem;
             menuItem++;
             
+            if (menuLevel==0){
+             // menuLevel=menuItem+1;
+              if (menuItem==4){
+              menuItem=0;
+                }
+              
+              lcd.setCursor(0,0);
+              lcd.print("durr i am work");
+              Serial.println(menuItem);
+              Serial.println("bla");
+            }
+            
+            else{
             if (menuItem==4){menuItem=1;}
+            }
+            
             lcd.setCursor (0, menuItem);
             lcd.print(">");
-            menuLevel=menuItem;
-            if (menuItemOld!=0){
+            
+            
             lcd.setCursor (0, menuItemOld);
             lcd.print(" ");
-            }
+            
+            
       }
 
       if (sw == switchok){
         Serial.println("Switch ok pressed");
         lcd.clear();
+        menuLevel=menuItem;
+        
+         if(menuLevel==0){
+          int i=1;
+          for(i;i<5;i++){
+           lcd.setCursor (1, (i-1));
+           lcd.print(menuitems[menuLevel][i]);
+          }
+        } 
+        else{
         int i=0;
         for(i;i<4;i++){
           if(i==0){
@@ -216,6 +255,8 @@ void loop()
           //Serial.println(i);
           //Serial.println(menuitems[menuLevel][i]);
         }
+        }
+       
          
         light=20;
         lcd.setBacklight(HIGH);
