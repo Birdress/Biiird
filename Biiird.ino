@@ -174,9 +174,6 @@ void loop()
              lcd.setCursor (1, i);
           }
           lcd.print(menuitems[menuLevel][i]);
-          Serial.println(menuLevel);
-          //Serial.println(i);
-          //Serial.println(menuitems[menuLevel][i]);
         }
       }
       
@@ -220,8 +217,6 @@ void loop()
                         
             lcd.setCursor (0, menuItemOld);
             lcd.print(" ");
-            
-            
       }
 
       if (sw == switchok){
@@ -246,9 +241,6 @@ void loop()
              lcd.setCursor (1, i);
           }
           lcd.print(menuitems[menuLevel][i]);
-          Serial.println(menuLevel);
-          //Serial.println(i);
-          //Serial.println(menuitems[menuLevel][i]);
         }
         }
        
