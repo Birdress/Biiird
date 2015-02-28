@@ -184,15 +184,19 @@ void loop()
         menuItemOld=menuItem;
             menuItem--;
             
+            if ((menuLevel==0)&&(menuItem<0)){
+            menuItem=3;
+            }
+            
+            else{
             if (menuItem<=0){menuItem=3;}
+            }
+            
             lcd.setCursor (0, menuItem);
             lcd.print(">");
-            menuLevel=menuItem;
-            if (menuItemOld!=0){
             lcd.setCursor (0, menuItemOld);
             lcd.print(" ");
-            }
-      }
+        }
 
      if (sw == switchdown){
        // Serial.println("Switch down pressed");
@@ -203,16 +207,8 @@ void loop()
            menuItemOld=menuItem;
             menuItem++;
             
-            if (menuLevel==0){
-             // menuLevel=menuItem+1;
-              if (menuItem==4){
-              menuItem=0;
-                }
-              
-              lcd.setCursor(0,0);
-              lcd.print("durr i am work");
-              Serial.println(menuItem);
-              Serial.println("bla");
+            if ((menuLevel==0)&&(menuItem==4)){
+            menuItem=0;
             }
             
             else{
@@ -221,8 +217,7 @@ void loop()
             
             lcd.setCursor (0, menuItem);
             lcd.print(">");
-            
-            
+                        
             lcd.setCursor (0, menuItemOld);
             lcd.print(" ");
             
