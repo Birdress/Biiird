@@ -2,17 +2,21 @@
 #include <LiquidCrystal_I2C.h>
 #include <SoftwareSerial.h>
 
-int menuItem=0;
+int menuItem=1;
 int menuItemOld=0;
 int menuLevel=0;
+int menuOffset = 0;
 
 char* menu0[] = {"Main Menu", "Flight Control", "Drop Control", "Waypoints", "Power"};
 char* menu1[] = {"Flight Mode", "Up/Down Mode", "Move Mode", "Metrics"};
 char* menu2[] = {"Drop Control", "Open/Drop", "", "Metrics"};
 char* menu3[] = {"Waypoints", "Waypoint 1", "Waypoint 2", "Metrics"};
 char* menu4[] = {"Power", "Controller Power", "UAV Power", "Metrics"};
-
+int menuSize[] = {4, 3, 3, 3, 3};
 char** menuitems[] = {menu0, menu1, menu2, menu3, menu4};
+
+int MENU_WIDTH = 20;
+int MENU_HEIGHT = 3;
 
 // Set the LCD I2C address, En, Rw, Rs, d4, d5, d6, d7, backlight, light state
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE); 
@@ -157,98 +161,103 @@ void loop()
     }
 
     // deal with the switches
-    
     int sw = checkSwitches();
     if (lastsw != sw){
       lastsw = sw;
       
       if (sw == switchback){
         menuLevel=0;
-        lcd.clear();
-        int i=0;
-        for(i;i<4;i++){
-          if(i==0){
-            lcd.setCursor (0,0);
-          }
-          else{  
-             lcd.setCursor (1, i);
-          }
-          lcd.print(menuitems[menuLevel][i]);
-        }
+        menuItem=0;
       }
       
      if (sw == switchup){
+        Serial.println("Switch up pressed");
         menuItemOld=menuItem;
-            menuItem--;
-            
-            if ((menuLevel==0)&&(menuItem<0)){
-            menuItem=3;
-            }
-            
-            else{
-            if (menuItem<=0){menuItem=3;}
-            }
-            
-            lcd.setCursor (0, menuItem);
-            lcd.print(">");
-            lcd.setCursor (0, menuItemOld);
-            lcd.print(" ");
-        }
+        menuItem--;
+     }
 
      if (sw == switchdown){
-       // Serial.println("Switch down pressed");
-        //lcd.setCursor (0, 1);
-        //lcd.print("DOWN pressed        "); 
-        //light=20;
-        //lcd.setBacklight(HIGH);
+       Serial.println("Switch down pressed");
            menuItemOld=menuItem;
-            menuItem++;
-            
-            if ((menuLevel==0)&&(menuItem==4)){
-            menuItem=0;
-            }
-            
-            else{
-            if (menuItem==4){menuItem=1;}
-            }
-            
-            lcd.setCursor (0, menuItem);
-            lcd.print(">");
-                        
-            lcd.setCursor (0, menuItemOld);
-            lcd.print(" ");
+           menuItem++;
       }
 
       if (sw == switchok){
         Serial.println("Switch ok pressed");
-        lcd.clear();
         menuLevel=menuItem;
-        
-         if(menuLevel==0){
-          int i=1;
-          for(i;i<5;i++){
-           lcd.setCursor (1, (i-1));
-           lcd.print(menuitems[menuLevel][i]);
+        menuOffset=0;            
+      }
+      
+      //Ignore pushdown signal
+      if (sw == 0){
+        break;
+      }
+      
+      // Re-activate backlight
+      light = 20;
+      lcd.setBacklight(HIGH);
+      
+      // Handle loop-around of menuItem
+      if (menuItem < 1){
+         //Bottom of list
+         menuItem = 1;
+         if(menuSize[menuLevel] > MENU_HEIGHT){
+            if (menuOffset > 0){
+                menuOffset--;
+            }
+            else{
+                menuItem = 3;
+                menuOffset = menuSize[menuLevel] - MENU_HEIGHT;
+            }
           }
-        } 
-        else{
-        int i=0;
-        for(i;i<4;i++){
-          if(i==0){
-            lcd.setCursor (0,0);
+          else{
+              menuItem = 3;
+          }
+      }
+      else if(menuItem > 3){
+          //Top of list
+          menuItem = 3;
+          if(menuSize[menuLevel] > MENU_HEIGHT){
+              if(menuOffset < (menuSize[menuLevel] - MENU_HEIGHT)){
+                  menuOffset++;
+              }
+              else{
+                  menuItem = 1;
+                  menuOffset = 0;
+              }
+          }
+          else{
+              menuItem = 1;
+          }
+      }
+      
+      // Switch has changed, redraw menu
+      lcd.clear();
+      int i=0;
+      int ci=0;
+      for(i;i<4;i++){
+          ci = i + menuOffset;
+          if(ci==0){
+              lcd.setCursor (0,0);
           }
           else{  
-             lcd.setCursor (1, i);
+              lcd.setCursor (1, i);
           }
-          lcd.print(menuitems[menuLevel][i]);
-        }
-        }
-       
-         
-        light=20;
-        lcd.setBacklight(HIGH);
-                
-              
+          lcd.print(menuitems[menuLevel][ci]);
+      }
+      
+      // Print menu cursor
+      lcd.setCursor (0, menuItem);
+      lcd.print(">");
+      
+      // Draw cursors (if scrolling)
+      if(menuOffset < menuSize[menuLevel] - MENU_HEIGHT){
+          lcd.setCursor (MENU_WIDTH-1, MENU_HEIGHT);
+          lcd.print("V");
+      }
+      if(menuOffset > 1){
+          lcd.setCursor (MENU_WIDTH-1, 0);
+          lcd.print("^");
       }
     }
   }
