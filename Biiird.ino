@@ -184,7 +184,7 @@ void loop()
 
       if (sw == switchok){
         Serial.println("Switch ok pressed");
-        menuLevel=menuItem;
+        menuLevel=menuItem + menuOffset;
         menuOffset=0;            
       }
       
@@ -203,7 +203,7 @@ void loop()
          menuItem = 1;
          if(menuSize[menuLevel] > MENU_HEIGHT){
             if (menuOffset > 0){
-                menuOffset--;
+                menuOffset--;         
             }
             else{
                 menuItem = 3;
