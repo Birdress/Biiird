@@ -10,9 +10,9 @@ int menuOffset = 0;
 char* menu0[] = {"Main Menu", "Flight Control", "Drop Control", "Waypoints", "Power"};
 char* menu1[] = {"Flight Mode", "Up/Down Mode", "Move Mode", "Metrics"};
 char* menu2[] = {"Drop Control", "Open/Drop", "", "Metrics"};
-char* menu3[] = {"Waypoints", "Waypoint 1", "Waypoint 2", "Metrics"};
+char* menu3[] = {"Waypoints", "Waypoint 1", "Waypoint 2", "Waypoint 3", "Waypoint 4", "Metrics"};
 char* menu4[] = {"Power", "Controller Power", "UAV Power", "Metrics"};
-int menuSize[] = {4, 3, 3, 3, 3};
+int menuSize[] = {4, 3, 3, 5, 3};
 char** menuitems[] = {menu0, menu1, menu2, menu3, menu4};
 
 int MENU_WIDTH = 20;
