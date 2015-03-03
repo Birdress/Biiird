@@ -6,6 +6,7 @@ int menuItem=1;
 int menuItemOld=0;
 int menuLevel=0;
 int menuOffset = 0;
+int subMenu=0;
 
 char* menu0[] = {"Main Menu", "Flight Control", "Drop Control", "Waypoints", "Power"};
 char* menu1[] = {"Flight Mode", "Up/Down Mode", "Move Mode", "Metrics"};
@@ -17,6 +18,7 @@ char** menuitems[] = {menu0, menu1, menu2, menu3, menu4};
 
 int MENU_WIDTH = 20;
 int MENU_HEIGHT = 3;
+
 
 // Set the LCD I2C address, En, Rw, Rs, d4, d5, d6, d7, backlight, light state
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE); 
@@ -54,6 +56,7 @@ const int switchup = 4;
 const int switchok = 2;
 const int switchdown= 3;
 const int switchback=5; //new switch
+const int switchselect=6;
 
 int lastsw = 0; //keep track of last switch pressed
 
@@ -72,6 +75,7 @@ void setup()
   pinMode(switchok, INPUT_PULLUP); 
   pinMode(switchdown, INPUT_PULLUP); 
   pinMode(switchback, INPUT_PULLUP);
+  pinMode(switchselect, INPUT_PULLUP);
 
 
   // i2c LCD
@@ -185,12 +189,32 @@ void loop()
       if (sw == switchok){
         Serial.println("Switch ok pressed");
         menuLevel=menuItem + menuOffset;
-        menuOffset=0;            
+        menuOffset=0;     
+ 
+       /*  if (menuLevel==1 && menuItem==2){
+           int testval=5;
+           subMenu=1;
+          Serial.println("In up/down mode");
+          lcd.clear();
+          lcd.setCursor (0,0);
+          lcd.print("Up/down mode");
+          lcd.setCursor (0, 1);
+          lcd.print("Press up/down");
+          lcd.setCursor (0, 2);
+          lcd.print("Height:");
+          lcd.setCursor (8, 2);
+          lcd.print(testval);
+         }      */ 
       }
       
       //Ignore pushdown signal
       if (sw == 0){
         break;
+      }
+      
+      if (sw==switchselect){
+        Serial.println("switchselect pressed");
+        
       }
       
       // Re-activate backlight
@@ -232,6 +256,7 @@ void loop()
       }
       
       // Switch has changed, redraw menu
+      if (subMenu==0){
       lcd.clear();
       int i=0;
       int ci=0;
@@ -244,6 +269,7 @@ void loop()
               lcd.setCursor (1, i);
           }
           lcd.print(menuitems[menuLevel][ci]);
+      }
       }
       
       // Print menu cursor
@@ -279,6 +305,9 @@ int checkSwitches(){
   
   val = digitalRead(switchback);
   if (val==0) return switchback;
+  
+  val = digitalRead(switchselect);
+  if (val==0) return switchselect;
 
   return 0;
 }
