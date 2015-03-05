@@ -172,6 +172,7 @@ void loop()
       if (sw == switchback){
         menuLevel=0;
         menuItem=0;
+        subMenu=0;
       }
       
      if (sw == switchup){
@@ -215,6 +216,45 @@ void loop()
       if (sw==switchselect){
         Serial.println("switchselect pressed");
         
+        if (menuLevel==1 && menuItem==1){
+           int testval=5;
+           subMenu=1;
+          Serial.println("In up/down mode");
+          lcd.clear();
+          lcd.setCursor (0,0);
+          lcd.print("Up/down mode");
+          lcd.setCursor (0, 1);
+          lcd.print("Press up/down");
+          lcd.setCursor (0, 2);
+          lcd.print("Height:");
+          lcd.setCursor (8, 2);
+          lcd.print(testval);
+         }     
+        if (menuLevel==1 && menuItem==2){
+           int testval=5;
+           subMenu=1;
+          Serial.println("In flight mode");
+          lcd.clear();
+          lcd.setCursor (0,0);
+          lcd.print("Flight mode");
+          lcd.setCursor (0, 1);
+          lcd.print("Use D-pad to move");
+          lcd.setCursor(0,3);
+          lcd.print("Metrics");
+         }   
+          if (menuLevel==2 && menuItem==1){
+           int testval=5;
+           subMenu=1;
+          Serial.println("In open/drop mode");
+          lcd.clear();
+          lcd.setCursor (0,0);
+          lcd.print("Open/drop mode");
+          lcd.setCursor (0, 1);
+          lcd.print("Press select to toggle open");
+         }   
+         
+       
+       
       }
       
       // Re-activate backlight
@@ -270,7 +310,7 @@ void loop()
           }
           lcd.print(menuitems[menuLevel][ci]);
       }
-      }
+      
       
       // Print menu cursor
       lcd.setCursor (0, menuItem);
@@ -285,7 +325,7 @@ void loop()
           lcd.setCursor (MENU_WIDTH-1, 0);
           lcd.print("^");
       }
-    }
+    }}
   }
 }
 
